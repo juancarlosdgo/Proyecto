@@ -5,24 +5,45 @@ micursor=con.cursor()
 def ver():
     lista=[]
     sentence="SELECT * FROM tb_facturas"
+    sentence2="SELECT * FROM tb_facturas INNER JOIN fac_restaurante ON tb_facturas.Num_factura=fac_restaurante.Numero_fac"
     lista=micursor.execute(sentence).fetchall()
+    listafac=micursor.execute(sentence2).fetchall()
+    for row in listafac:
+        nombre=row[5]
+        documento=row[6]
+        método_pago=row[7]
+        num_hab=row[8]
+        num_fac=row[9]
+        total=row[10]
+        rf=Restaurante(nombre,str(documento),método_pago,str(num_hab),str(num_fac),str(total))
+
+        listaf=[]
+        listaf.append(rf)
+    for fact in listaf:
+        print("Restaurante: ",fact.getFacturarestaurante())
     facturas=[]
     for fila in lista:
         numero=fila[0]
         fecha=fila[1]
         precio=fila[2]
         estado=fila[3]
-        id_reserva=fila[4]
-        num_hab=fila[5]
-        f=Factura(str(numero),str(fecha),str(precio),estado,str(id_reserva),str(num_hab))
+        num_hab=fila[4]
+        f=Factura(str(numero),str(fecha),str(precio),estado,str(num_hab))
         facturas.append(f)
     for factura in facturas:
         print(factura.getDatos())
 def datos():
     num=input("Ingrese el número de factura: ")
-    sentence=f"SELECT * FROM tb_facturas WHERE num_factura={num}"
-    datos=micursor.execute(sentence).fetchall()
-    [print(j, end=" ") for i in datos for j in i]
+    sentence=f"SELECT * FROM tb_facturas INNER JOIN fac_restaurante ON tb_facturas.Num_factura=fac_restaurante.Numero_fac WHERE Num_factura={num}"
+    sentence2=f"SELECT * FROM tb_facturas WHERE Num_factura={num}"
+    d=micursor.execute(sentence).fetchall()
+    datos=micursor.execute(sentence2).fetchall()
+    if d:
+        for row in d:
+            print(row)
+    else:
+        for row in datos:
+            print(row)
 def factura():
     campo=input("¿De qué columna desea ver el dato?: ")
     campo2=input("Específique la columna de donde va a obtener el dato: ")
@@ -38,8 +59,9 @@ def registro():
     b=input("Ingrese fecha : ")
     c=input("Ingrese precio total: ")
     d=input("Ingrese estado del pago: ")
-    e=input("Ingrese el id de reserva: ")
+    e=input("Ingrese el número de habitación: ")
     sentence=f"INSERT INTO tb_facturas VALUES ('{a}','{b}','{c}','{d}','{e}')"
+    #micursor.execute("INSERT INTO tb_fac")
     micursor.execute(sentence)
     con.commit()
     print("¡¡Registro creado!!")
@@ -53,10 +75,10 @@ def modificación():
     con.commit()
     print("¡¡Modificación exitosa!!")
 def eliminar():
-    campo=input("Ingrese el campo: ")
+    #campo=input("Ingrese el campo: ")
+    dato=input("Ingrese el número de factura: ")
     operador=input("Ingrese el operador: ")
-    dato=input("Ingrese el campo que desea borrar: ")
-    sentence=f"DELETE FROM tb_facturas WHERE {campo}{operador}{dato}"
+    sentence=f"DELETE FROM tb_facturas WHERE Num_factura={dato}"
     micursor.execute(sentence)
     con.commit()
 while True:
@@ -77,5 +99,5 @@ while True:
                 eliminar()
             case 7:
                 break
-    except sqlite3.IntegrityError:
-       print("Verifique que los datos no estén repetidos y que sean correctos.")
+    except (sqlite3.OperationalError,sqlite3.IntegrityError):
+        print("Verifique que los datos no estén repetidos y que sean correctos.")

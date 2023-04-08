@@ -2,37 +2,32 @@ from ClaseFactura import *
 import sqlite3
 con=sqlite3.connect("proyectosena.db")
 cursor=con.cursor()
-
 def ver():
     lista=[]
-    sentence=("SELECT * FROM fac_restaurante")
+    sentence=("SELECT * FROM fac_lavandería")
     lista=cursor.execute(sentence).fetchall()
-    restaurante=[]
+    lavandería=[]
     for fila in lista:
-        nombre=fila[0]
-        documento=fila[1]
-        método_pago=fila[2]
-        num_hab=fila[3]
-        id_reserva=fila[4]
-        total=fila[5]
-        fr=Restaurante(nombre,str(documento),método_pago,str(total),str(num_hab),str(id_reserva))
-        restaurante.append(fr)
-    for factura in restaurante:
-        print(factura.getFacturarestaurante())
+        num_hab=fila[0]
+        método_pago=fila[1]
+        num_factura=fila[2]
+        total=fila[3]
+        fr=Lavandería(str(num_hab),método_pago,str(num_factura),str(total))
+        lavandería.append(fr)
+    for factura in lavandería:
+        print(factura.getLav())
 def buscar():
     numero=input("Ingrese el número de la factura: ")
-    sentence=f"SELECT * FROM fac_restaurante WHERE num_hab='{numero}'"
+    sentence=f"SELECT * FROM fac_lavandería WHERE num_hab='{numero}'"
     b=cursor.execute(sentence).fetchall()
     for i in b:
         print(i)
 def registro():
-    nombre=input("Ingrese el nombre: ")
-    documento=int(input("Ingrese el número de documento: "))
-    método_pago=input("Ingrese el método de pago: ")
     num_hab=input("Ingrese el número de habitación: ")
+    método_pago=input("Ingrese el método de pago: ")
     num_factura=input("Ingrese el número de factura: ")
     total=int(input("Ingrese el total: "))
-    sentence=f"INSERT INTO fac_restaurante VALUES ('{nombre}','{documento}','{método_pago}','{num_hab}','{num_factura}','{total}')"
+    sentence=f"INSERT INTO fac_lavandería VALUES ('{num_hab}','{método_pago}','{num_factura}','{total}')"
     cursor.execute(sentence)
     con.commit()
     print("¡¡Registro exitoso!!")
