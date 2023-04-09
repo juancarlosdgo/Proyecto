@@ -1,5 +1,5 @@
 import sqlite3
-con=sqlite3.connect('proyectosena.db')
+con=sqlite3.connect('proyectosenadb.db')
 micursor=con.cursor()
 
 def todo():
@@ -12,7 +12,6 @@ def todo():
     if ingrese ==1:
         def seleccion(tabla):
             try:
-                tabla=input("Ingrese el nombre de la tabla: ")
                 e=input("digite el campo que desea seleccionar: ")
                 i=input("digite el operador que desea seleccionar: ")
                 o=input("digite el dato que desea seleccionar: ")
@@ -34,7 +33,6 @@ def todo():
     if ingrese==2:
         def modificar(tabla):
             try:
-                tabla=input("Ingrese el nombre de la tabla")
                 e=input("ingrese el campo que desea modificar: ")
                 i=input("ingrese el dato modificado: ")
                 o=input("ingrese el id_eventos que se desea modificar: ")
